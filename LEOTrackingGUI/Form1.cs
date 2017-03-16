@@ -26,8 +26,8 @@ namespace LEOTrackingGUI
 
         private System.Timers.Timer myTimer;
         
-        private string python = @"C:\Program Files (x86)\Python35-32\python.exe";
-        private string app = @"C:\Users\Joshua\Desktop\LEOTrackingGUI\test.py";
+        private string python = @"LEOTrackingGUI\Python\Shell\python.exe";
+        private string app = @"LEOTrackingGUI\Python\test.py";
         private ProcessStartInfo psi;
         private Process pyScript;
         private static StreamReader reader; 
@@ -98,10 +98,10 @@ namespace LEOTrackingGUI
         //Also used to start python scripts
         private void Form1_Load(object sender, EventArgs e)
         {
-            axWindowsMediaPlayer1.URL = @"C:\Users\Joshua\Desktop\LEOTrackingGUI\Sat_225122_08232016.mp4";
-            axWindowsMediaPlayer2.URL = @"C:\Users\Joshua\Desktop\LEOTrackingGUI\Sat_235411_08232016.mp4";
-            axWindowsMediaPlayer1.Ctlcontrols.stop();
-            axWindowsMediaPlayer2.Ctlcontrols.stop();
+            //axWindowsMediaPlayer1.URL = @"C:\Users\Joshua\Desktop\LEOTrackingGUI\Sat_225122_08232016.mp4";
+            //axWindowsMediaPlayer2.URL = @"C:\Users\Joshua\Desktop\LEOTrackingGUI\Sat_235411_08232016.mp4";
+            //axWindowsMediaPlayer1.Ctlcontrols.stop();
+            //axWindowsMediaPlayer2.Ctlcontrols.stop();
         }
 
         private void trackingButton_Click(object sender, EventArgs e)
