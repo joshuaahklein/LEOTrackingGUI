@@ -59,7 +59,7 @@
             this.submitButton.Location = new System.Drawing.Point(15, 69);
             this.submitButton.Name = "submitButton";
             this.submitButton.Size = new System.Drawing.Size(257, 23);
-            this.submitButton.TabIndex = 2;
+            this.submitButton.TabIndex = 3;
             this.submitButton.Text = "Submit";
             this.submitButton.UseVisualStyleBackColor = true;
             this.submitButton.Click += new System.EventHandler(this.submitButton_Click);
@@ -69,7 +69,7 @@
             this.cancelButton.Location = new System.Drawing.Point(15, 98);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(257, 23);
-            this.cancelButton.TabIndex = 3;
+            this.cancelButton.TabIndex = 4;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
@@ -97,7 +97,7 @@
             this.gpsTextBox2.Location = new System.Drawing.Point(75, 47);
             this.gpsTextBox2.Name = "gpsTextBox2";
             this.gpsTextBox2.Size = new System.Drawing.Size(197, 16);
-            this.gpsTextBox2.TabIndex = 6;
+            this.gpsTextBox2.TabIndex = 2;
             this.gpsTextBox2.Text = "";
             // 
             // GPSDialog
