@@ -25,9 +25,8 @@ namespace LEOTrackingGUI
         private string TLE;
 
         private System.Timers.Timer myTimer;
-        
-        private string python = @"LEOTrackingGUI\Python\Shell\python.exe";
-        private string app = @"LEOTrackingGUI\Python\test.py";
+
+        private string python, app, basePath;
         private ProcessStartInfo psi;
         private Process pyScript;
         private static StreamReader reader; 
@@ -40,6 +39,14 @@ namespace LEOTrackingGUI
         public Form1()
         {
             InitializeComponent();
+
+            //Remove bin\Debug for base path
+            Console.WriteLine(Directory.GetCurrentDirectory());
+            string path = Directory.GetCurrentDirectory();
+            basePath = path.Substring(0, path.Length - @"LEOTrackingGUI\bin\Debug".Length);
+            python = basePath + @"Python\Shell\python.exe";
+            app = basePath + @"Python\test.py";
+          
 
             //Set up timer
             myTimer = new System.Timers.Timer();
