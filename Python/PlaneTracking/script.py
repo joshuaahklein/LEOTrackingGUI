@@ -9,6 +9,8 @@ from __future__ import print_function # Only Python 2.x
 import subprocess
 import re
 
+import os
+
 # function to extract output of process while it is running
 # found at http://stackoverflow.com/questions/4417546/constantly-print-subprocess-output-while-process-is-running
 # all credit to original author
@@ -27,9 +29,16 @@ pattern = re.compile('^[0-9A-F]{6} ') # might not need final space
 # initialize dictionary
 planes = {}
 
+path = str(os.getcwd)
+path += "dump1090.exe --aggressive --interactive"
+
 # make the magic happen
 for line in execute(
-        r"C:\Users\zchap_000\Documents\BU_Fall_2016\EC463\RTL-SDR\dump1090-win.1.10.3010.14\dump1090.exe --aggressive --interactive"):
+        #r"C:\Users\zchap_000\Documents\BU_Fall_2016\EC463\RTL-SDR\dump1090-win.1.10.3010.14\dump1090.exe --aggressive --interactive"
+        path
+        ):
+
+
     # check if we have a line that contains plane info
     match = re.match(pattern, line)
     
