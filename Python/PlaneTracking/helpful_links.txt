@@ -1,0 +1,4 @@
+Helpful links
+
+RTL-SDR QuickStart Guide: http://www.rtl-sdr.com/rtl-sdr-quick-start-guide/
+dump1090 GitHub: https://github.com/antirez/dump1090
