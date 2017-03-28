@@ -46,7 +46,8 @@ namespace LEOTrackingGUI
             basePath = path.Substring(0, path.Length - @"LEOTrackingGUI\bin\Debug".Length);
             python = basePath + @"Python\Shell\python.exe";
             satApp = basePath + @"Python\SatTracking\pathpredict.py";
-            planeApp = basePath + @"Python/PlaneTracking\script.py";
+            //satApp = basePath + @"Python\SatTracking\test.py";
+            planeApp = basePath + @"Python\PlaneTracking\script.py";
 
             //Set default values
             TLE = line1 + "\n\t" + line2;
@@ -149,9 +150,8 @@ namespace LEOTrackingGUI
             psi.RedirectStandardOutput = true;
 
             //Pass arguments
-            //psi.Arguments = app + " " + GPSlatitude + " " + GPSlongitude + " " + TLE + " ";
-            psi.Arguments = app;
-
+            psi.Arguments = app + " " + GPSlatitude + " " + GPSlongitude + " " + TLE + " ";
+            
             //Start process
             pyScript = new Process();
             pyScript.StartInfo = psi;
@@ -159,6 +159,7 @@ namespace LEOTrackingGUI
 
             reader = pyScript.StandardOutput;
             pyOutStr = reader.ReadToEnd();
+            Console.WriteLine(pyOutStr);
 
             pyScript.WaitForExit();
             pyScript.Close();

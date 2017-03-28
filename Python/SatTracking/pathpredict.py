@@ -78,6 +78,10 @@ for x in range(0,i): #position matrix
     alpha.append(alphatemp)
     beta.append(betatemp)
     
+    #Mod for printing
+    print"%s, %s, %s, %s, %s" % (aztemp, eltemp, alphatemp, betatemp, epoch))
+
+
     file.write("%s, %s, %s, %s, %s\n" % (aztemp, eltemp, alphatemp, betatemp, epoch))
     file.close()
    
@@ -87,16 +91,12 @@ print("Rise time: %s azimuth: %s" % (info[0], info[1]))
 velalpha = []
 velbeta = []
 
-#Mod for printinf
-# for x in range(0,i-1): #velocity matrix
-#     if x == 0:
-#         file = open("ISSvel.txt","w")
-#     else:
-#        file = open("ISSvel.txt","a")
-
-
-
-    
+for x in range(0,i-1): #velocity matrix
+    if x == 0:
+        file = open("ISSvel.txt","w")
+    else:
+        file = open("ISSvel.txt","a")
+#    
 #do we need this? check ranges   
 #    if alpha[x+1] >= 0 and \
 #       alpha[x] >= 0:
@@ -111,12 +111,8 @@ velbeta = []
 
     velalpha.append(velalphatemp)
     velbeta.append(velbetatemp)
-   
-
-#Mod for printing 
-#    file.write("%s, %s\n" % (velalphatemp, velbetatemp))
-#    file.close()
- 
-print("%s, %s\n" % (velalphatemp, velbetatemp))
-
+    
+    file.write("%s, %s\n" % (velalphatemp, velbetatemp))
+    file.close()
+    
 print("DONE")
