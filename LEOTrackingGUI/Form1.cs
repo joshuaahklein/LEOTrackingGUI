@@ -26,7 +26,7 @@ namespace LEOTrackingGUI
 
         private System.Timers.Timer myTimer;
 
-        private string python, app, basePath;
+        private string python, satApp, planeApp, basePath;
         private ProcessStartInfo psi;
         private Process pyScript;
         private static StreamReader reader; 
@@ -45,8 +45,15 @@ namespace LEOTrackingGUI
             string path = Directory.GetCurrentDirectory();
             basePath = path.Substring(0, path.Length - @"LEOTrackingGUI\bin\Debug".Length);
             python = basePath + @"Python\Shell\python.exe";
-            app = basePath + @"Python\test.py";
-          
+            satApp = basePath + @"Python\SatTracking\pathpredict.py";
+            planeApp = basePath + @"Python/PlaneTracking\script.py";
+
+            //Set default values
+            TLE = line1 + "\n\t" + line2;
+            tleLabel.Text = "TLE:\t" + TLE;
+            gpsLabel.Text = "GPS Coordinates\nLatitude: 0.00\nLongitude: 0.00";
+            GPSlatitude = GPSlongitude = "0.00";
+
 
             //Set up timer
             myTimer = new System.Timers.Timer();
@@ -136,18 +143,14 @@ namespace LEOTrackingGUI
             axWindowsMediaPlayer2.Ctlcontrols.play();
 
             //Set up process for running py script, read from stdout
+            string app = (radioTLE.Checked) ? satApp : planeApp;
             psi = new ProcessStartInfo(python, app);
             psi.UseShellExecute = false;
             psi.RedirectStandardOutput = true;
 
-            //Get tracking arg
-            int track = 0;
-            if (radioTLE.Checked) track = 1;
-            else if (radioPlanes.Checked) track = 2;
-            else if (radioBalloon.Checked) track = 3;
-
             //Pass arguments
-            psi.Arguments = app + " " + GPSlatitude + " " + GPSlongitude + " " + TLE + " " + track;
+            //psi.Arguments = app + " " + GPSlatitude + " " + GPSlongitude + " " + TLE + " ";
+            psi.Arguments = app;
 
             //Start process
             pyScript = new Process();

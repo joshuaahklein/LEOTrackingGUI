@@ -47,7 +47,6 @@
             this.abortButton = new System.Windows.Forms.Button();
             this.radioTLE = new System.Windows.Forms.RadioButton();
             this.radioPlanes = new System.Windows.Forms.RadioButton();
-            this.radioBalloon = new System.Windows.Forms.RadioButton();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer2)).BeginInit();
@@ -57,7 +56,7 @@
             // 
             this.menuStrip1.Location = new System.Drawing.Point(0, 24);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1063, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1236, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -67,7 +66,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip2.Location = new System.Drawing.Point(0, 0);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(1063, 24);
+            this.menuStrip2.Size = new System.Drawing.Size(1236, 24);
             this.menuStrip2.TabIndex = 1;
             this.menuStrip2.Text = "menuStrip2";
             // 
@@ -137,7 +136,7 @@
             // axWindowsMediaPlayer1
             // 
             this.axWindowsMediaPlayer1.Enabled = true;
-            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(15, 95);
+            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(141, 95);
             this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
             this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer1.OcxState")));
             this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(512, 512);
@@ -155,7 +154,7 @@
             // axWindowsMediaPlayer2
             // 
             this.axWindowsMediaPlayer2.Enabled = true;
-            this.axWindowsMediaPlayer2.Location = new System.Drawing.Point(534, 95);
+            this.axWindowsMediaPlayer2.Location = new System.Drawing.Point(659, 95);
             this.axWindowsMediaPlayer2.Name = "axWindowsMediaPlayer2";
             this.axWindowsMediaPlayer2.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer2.OcxState")));
             this.axWindowsMediaPlayer2.Size = new System.Drawing.Size(512, 512);
@@ -163,7 +162,7 @@
             // 
             // trackingButton
             // 
-            this.trackingButton.Location = new System.Drawing.Point(845, 35);
+            this.trackingButton.Location = new System.Drawing.Point(1019, 35);
             this.trackingButton.Name = "trackingButton";
             this.trackingButton.Size = new System.Drawing.Size(98, 23);
             this.trackingButton.TabIndex = 8;
@@ -173,7 +172,7 @@
             // 
             // abortButton
             // 
-            this.abortButton.Location = new System.Drawing.Point(950, 35);
+            this.abortButton.Location = new System.Drawing.Point(1123, 35);
             this.abortButton.Name = "abortButton";
             this.abortButton.Size = new System.Drawing.Size(101, 23);
             this.abortButton.TabIndex = 9;
@@ -185,7 +184,7 @@
             // 
             this.radioTLE.AutoSize = true;
             this.radioTLE.Checked = true;
-            this.radioTLE.Location = new System.Drawing.Point(572, 41);
+            this.radioTLE.Location = new System.Drawing.Point(843, 41);
             this.radioTLE.Name = "radioTLE";
             this.radioTLE.Size = new System.Drawing.Size(76, 17);
             this.radioTLE.TabIndex = 10;
@@ -196,29 +195,18 @@
             // radioPlanes
             // 
             this.radioPlanes.AutoSize = true;
-            this.radioPlanes.Location = new System.Drawing.Point(654, 41);
+            this.radioPlanes.Location = new System.Drawing.Point(925, 41);
             this.radioPlanes.Name = "radioPlanes";
             this.radioPlanes.Size = new System.Drawing.Size(88, 17);
             this.radioPlanes.TabIndex = 11;
             this.radioPlanes.Text = "Track Planes";
             this.radioPlanes.UseVisualStyleBackColor = true;
             // 
-            // radioBalloon
-            // 
-            this.radioBalloon.AutoSize = true;
-            this.radioBalloon.Location = new System.Drawing.Point(748, 41);
-            this.radioBalloon.Name = "radioBalloon";
-            this.radioBalloon.Size = new System.Drawing.Size(91, 17);
-            this.radioBalloon.TabIndex = 12;
-            this.radioBalloon.Text = "Track Balloon";
-            this.radioBalloon.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1063, 761);
-            this.Controls.Add(this.radioBalloon);
+            this.ClientSize = new System.Drawing.Size(1236, 761);
             this.Controls.Add(this.radioPlanes);
             this.Controls.Add(this.radioTLE);
             this.Controls.Add(this.abortButton);
@@ -263,7 +251,6 @@
         private System.Windows.Forms.Button abortButton;
         private System.Windows.Forms.RadioButton radioTLE;
         private System.Windows.Forms.RadioButton radioPlanes;
-        private System.Windows.Forms.RadioButton radioBalloon;
     }
 }
 
