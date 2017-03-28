@@ -159,7 +159,6 @@ namespace LEOTrackingGUI
 
             reader = pyScript.StandardOutput;
             pyOutStr = reader.ReadToEnd();
-            Console.WriteLine(pyOutStr);
 
             pyScript.WaitForExit();
             pyScript.Close();
