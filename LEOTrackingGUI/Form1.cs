@@ -162,8 +162,20 @@ namespace LEOTrackingGUI
             reader = pyScript.StandardOutput;
             pyOutStr = reader.ReadToEnd();
 
+
+
+
+
+
+
+
+         
             pyScript.WaitForExit();
             pyScript.Close();
+            status = 0;
+
+
+            Console.WriteLine(pyOutStr);
         }
 
         private void abortButton_Click(object sender, EventArgs e)
