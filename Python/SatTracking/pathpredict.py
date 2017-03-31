@@ -14,21 +14,22 @@ from datetime import datetime
 import sys
 import os
 
-#For GUI-related debugging
-# x = (sys.argv[1])  
-# y = (sys.argv[2]) 
-# z = (sys.argv[3])
-# w = (sys.argv[4])
-# print("Args received: " + x + " " + y + " " + z + " " + w)        
+# Get user args from GUI
+gpsLat = (sys.argv[1])  
+gpsLong = (sys.argv[2]) 
+TLE = (sys.argv[3]) 
 
-line1 = "ISS"
-line2 = "1 25544U 98067A   17041.55333126  .00016717  00000-0  10270-3 0  9008"
-line3 = "2 25544  51.6430 309.5978 0006847 175.5696 184.5519 15.54335653  2056"
+line1 = "sat"
+# line2 = "1 25544U 98067A   17041.55333126  .00016717  00000-0  10270-3 0  9008"
+# line3 = "2 25544  51.6430 309.5978 0006847 175.5696 184.5519 15.54335653  2056"
+TLElines = TLE.split("\n")
+print(TLElines)
 
 satellite = twoline2rv(line2, line3, wgs72)
 position, velocity = satellite.propagate(2000, 6, 29, 12, 50, 19)
 boston = city('Boston') #add coordinates from GPS    
-iss = readtle(line1, line2, line3)
+# iss = readtle(line1, line2, line3)
+iss = readtle(line1, TLElines[0], TLElines[1])
 
 #set up variables
 start = time() #add time from GPS

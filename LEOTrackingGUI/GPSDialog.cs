@@ -12,12 +12,16 @@ namespace LEOTrackingGUI
 {
     public partial class GPSDialog : Form
     {
-        public string GPSlat;
-        public string GPSlong;
+        public string GPSlat = "0.00";
+        public string GPSlong = "0.00";
 
         public GPSDialog()
         {
             InitializeComponent();
+
+            //Init default values
+            gpsTextBox.Text = GPSlat;
+            gpsTextBox2.Text = GPSlong;
         }
 
         private void submitButton_Click(object sender, EventArgs e)

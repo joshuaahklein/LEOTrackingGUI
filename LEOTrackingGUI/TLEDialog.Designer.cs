@@ -47,7 +47,7 @@
             // 
             this.tleTextBox.Location = new System.Drawing.Point(15, 25);
             this.tleTextBox.Name = "tleTextBox";
-            this.tleTextBox.Size = new System.Drawing.Size(257, 96);
+            this.tleTextBox.Size = new System.Drawing.Size(472, 96);
             this.tleTextBox.TabIndex = 1;
             this.tleTextBox.Text = "";
             // 
@@ -55,7 +55,7 @@
             // 
             this.submitButton.Location = new System.Drawing.Point(15, 127);
             this.submitButton.Name = "submitButton";
-            this.submitButton.Size = new System.Drawing.Size(257, 23);
+            this.submitButton.Size = new System.Drawing.Size(472, 23);
             this.submitButton.TabIndex = 2;
             this.submitButton.Text = "Submit";
             this.submitButton.UseVisualStyleBackColor = true;
@@ -65,7 +65,7 @@
             // 
             this.cancelButton.Location = new System.Drawing.Point(15, 156);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(257, 23);
+            this.cancelButton.Size = new System.Drawing.Size(472, 23);
             this.cancelButton.TabIndex = 3;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
@@ -75,7 +75,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 189);
+            this.ClientSize = new System.Drawing.Size(499, 189);
             this.ControlBox = false;
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.submitButton);

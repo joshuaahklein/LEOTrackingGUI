@@ -32,10 +32,6 @@ namespace LEOTrackingGUI
         private static StreamReader reader; 
         private static string pyOutStr = "1";
 
-        //temp for Amber's script
-        private string line1 = "1 00005U 58002B   00179.78495062  .00000023  00000-0  28098-4 0  4753";
-        private string line2 = "2 00005  34.2682 348.7242 1859667 331.7664  19.3264 10.82419157413667";
-
         public Form1()
         {
             InitializeComponent();
@@ -46,15 +42,15 @@ namespace LEOTrackingGUI
             basePath = path.Substring(0, path.Length - @"LEOTrackingGUI\bin\Debug".Length);
             python = basePath + @"Python\Shell\python.exe";
             satApp = basePath + @"Python\SatTracking\pathpredict.py";
-            //satApp = basePath + @"Python\SatTracking\test.py";
             planeApp = basePath + @"Python\PlaneTracking\script.py";
 
             //Set default values
-            TLE = line1 + "\n\t" + line2;
-            tleLabel.Text = "TLE:\t" + TLE;
+            TLE = "1 25544U 98067A   17041.55333126  .00016717  00000-0  10270-3 0  9008" + "\n" 
+                + "2 25544  51.6430 309.5978 0006847 175.5696 184.5519 15.54335653  2056";
+            tleLabel.Text = "TLE: " + TLE;
             gpsLabel.Text = "GPS Coordinates\nLatitude: 0.00\nLongitude: 0.00";
             GPSlatitude = GPSlongitude = "0.00";
-
+            tleDialog.TLE = TLE;
 
             //Set up timer
             myTimer = new System.Timers.Timer();
@@ -89,6 +85,11 @@ namespace LEOTrackingGUI
         //Handler for new GPS entry
         private void gPSCoordinateToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //Set given default
+            gpsDialog.GPSlat = GPSlatitude;
+            gpsDialog.GPSlong = GPSlongitude;
+
+            //Write result
             if (gpsDialog.ShowDialog() == DialogResult.OK)
             {
                 GPSlatitude = gpsDialog.GPSlat;
@@ -150,7 +151,8 @@ namespace LEOTrackingGUI
             psi.RedirectStandardOutput = true;
 
             //Pass arguments
-            psi.Arguments = app + " " + GPSlatitude + " " + GPSlongitude + " " + TLE + " ";
+            psi.Arguments = app + " " + GPSlatitude + " " + GPSlongitude + 
+                " \"" + TLE + "\" ";
             
             //Start process
             pyScript = new Process();
