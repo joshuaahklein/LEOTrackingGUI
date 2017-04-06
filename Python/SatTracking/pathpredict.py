@@ -40,12 +40,28 @@ boston = city('Boston') #add coordinates from GPS
 # iss = readtle(line1, line2, line3)
 iss = readtle(line1, TLElines[0], TLElines[1])
 
+#GPS Coordinates
+bos = Observer()
+bos.lon = '-71.038887'
+bos.lat = '42.364506'
+bos.elevation = 0
+
+#time
+start = time() 
+
+#satellite = twoline2rv(line2, line3, wgs72)
+#position, velocity = satellite.propagate(2000, 6, 29, 12, 50, 19)
+#boston = city('Boston') #add coordinates from GPS    
+
 #set up variables
-start = time() #add time from GPS
 az = []
 el = []
 alpha = []
 beta = []
+velalpha = []
+velbeta = []
+accelalpha = []
+accelbeta = []
 times = []
 timestep = 1 #1 is equal to one second
 i = 600 #number of steps of path desired
@@ -55,9 +71,9 @@ for x in range(0,i): #position matrix
     else: epoch = epoch    
         
     epoch = epoch + timestep #increase time by time step
-    boston.date = datetime.utcfromtimestamp(epoch)
+    bos.date = datetime.utcfromtimestamp(epoch)
     
-    iss.compute(boston) #run computations
+    iss.compute(bos) #run computations
 
     aztemp = degrees(iss.az)
     eltemp = degrees(iss.alt)
@@ -72,22 +88,31 @@ for x in range(0,i): #position matrix
     
     #Mod for printing
     print("%s, %s, %s, %s, %s" % (aztemp, eltemp, alphatemp, betatemp, epoch))
-   
-info = boston.next_pass(iss)
-print("Rise time: %s azimuth: %s" % (info[0], info[1]))
-
-velalpha = []
-velbeta = []
-
+ 
 for x in range(0,i-1): #velocity matrix
     velalphatemp = alpha[x+1]-alpha[x]
+    velalphatemp = velalphatemp/timestep
+    
     velbetatemp = beta[x+1]-beta[x]
+    velbetatemp = velbetatemp/timestep
 
     velalpha.append(velalphatemp)
     velbeta.append(velbetatemp)
     
     print("%s, %s" % (velalphatemp, velbetatemp))
+ 
+for x in range(0,i-2): #acceleration matrix
+    accelalphatemp = velalpha[x+1]-velalpha[x]
+    accelalphatemp = accelalphatemp/timestep
     
+    accelbetatemp = velbeta[x+1]-velbeta[x]
+    accelbetatemp = accelbetatemp/timestep
+
+    accelalpha.append(accelalphatemp)
+    accelbeta.append(accelbetatemp)
+    
+    print("%s, %s" % (accelalphatemp, accelbetatemp))
+
 print("PREDICTION DONE")
 
 
@@ -155,11 +180,6 @@ def StepperPositionChanged(e):
 def StepperVelocityChanged(e):
     source = e.device
     print("Stepper %i: Motor %i -- Velocity: %f" % (source.getSerialNum(), e.index, e.velocity))
-
-
-
-
-
 
 
 #Main Program Code
