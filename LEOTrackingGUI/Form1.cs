@@ -162,8 +162,9 @@ namespace LEOTrackingGUI
             reader = pyScript.StandardOutput;
             pyOutStr = reader.ReadToEnd();
 
+            //Run OpenCV .exe
 
-
+            Process.Start(basePath+@"\SatelliteTracker\x64\Debug\SatelliteTracker.exe");
 
 
 
