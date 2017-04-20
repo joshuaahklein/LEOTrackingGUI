@@ -22,7 +22,7 @@ import serial
 def poll():
     # define seral connection particular to the BU-353S4 GPS Receiver
     ser = serial.Serial(
-            port='COM3',	# change to appropriate COM port on your machine!
+            port='COM4',	# change to appropriate COM port on your machine!
             baudrate=4800,
             parity=serial.PARITY_NONE,
             stopbits=serial.STOPBITS_ONE,
@@ -78,9 +78,17 @@ def poll():
     
     # split gpsString on comma as fields are comma separated
     tokens = gpsString.split(',')
-    
+
     # prepare list, will send as final result
     gps = []
+
+    # if we don't have a GPS fix, return all -1.0 to indicate error
+    if tokens[1] == '':
+    	gps.append(-1.0)
+    	gps.append(-1.0)
+    	gps.append(-1.0)
+    	gps.append(-1.0)
+    	return gps
     
     # add UTC time as float
     gps.append(float(tokens[1]))
@@ -113,7 +121,12 @@ def poll():
     # return result
     return gps
 
-print(poll())
+gps = poll()
+print('UTC time: ' + str(gps[0]))
+print('Latitude: ' + str(gps[1]))
+print('Longitude: ' + str(gps[2]))
+print('Altitude: ' + str(gps[3]))
+
 
 # GPGGA message format:
 #$GPGGA,UTC time,lat,direction,long,direction,fix,#sats,

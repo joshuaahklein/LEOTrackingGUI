@@ -118,28 +118,12 @@ print("PREDICTION DONE")
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+##########################################################################################################
 
 
 
 # Open Control Loop
-
+# Author- Kyle Hughes
 #Information Display Function
 def DisplayDeviceInfo():
     print("|------------|----------------------------------|--------------|------------|")
@@ -181,7 +165,7 @@ def StepperVelocityChanged(e):
     source = e.device
     print("Stepper %i: Motor %i -- Velocity: %f" % (source.getSerialNum(), e.index, e.velocity))
 
-
+##################################################################################################
 #Main Program Code
 #Create a stepper object
 try:
@@ -246,13 +230,13 @@ try:
     print("The motor will run until it reaches the set goal position...")
     
     stepper.setAcceleration(0, 87543)
-    stepper.setVelocityLimit(0, 6200)
-    stepper.setCurrentLimit(0, 0.26)
+    stepper.setVelocityLimit(0, 8200)
+    stepper.setCurrentLimit(0, 0.35)
     sleep(0.2)
     
-    print("Will now move to position 20000...")
-    stepper.setTargetPosition(0, 20000)
-    while stepper.getCurrentPosition(0) != 20000:
+    #print("Will now move to position 40000...")
+    stepper.setTargetPosition(0, 80000)
+    while stepper.getCurrentPosition(0) != 80000:
         pass
     
     sleep(0.2)
@@ -284,19 +268,7 @@ except PhidgetException as e:
 
 print("Done.")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+########################################################################################################
 
 #Create a stepper object
 try:
@@ -365,9 +337,9 @@ try:
     stepper.setCurrentLimit(0, 0.26)
     sleep(0.2)
     
-    print("Will now move to position 20000...")
-    stepper.setTargetPosition(0, 20000)
-    while stepper.getCurrentPosition(0) != 20000:
+    print("Will now move to position -80000...")
+    stepper.setTargetPosition(0, 80000)
+    while stepper.getCurrentPosition(0) != 80000:
         pass
     
     sleep(0.2)
@@ -402,20 +374,4 @@ print("Done.")
 
 
 
-
-
-
-
-
-
-
 exit(0)
-
-
-
-
-
-
-
-
-
