@@ -22,7 +22,7 @@ import serial
 def poll():
     # define seral connection particular to the BU-353S4 GPS Receiver
     ser = serial.Serial(
-            port='COM1',	# change to appropriate COM port on your machine!
+            port='COM9',	# change to appropriate COM port on your machine!
             baudrate=4800,
             parity=serial.PARITY_NONE,
             stopbits=serial.STOPBITS_ONE,
