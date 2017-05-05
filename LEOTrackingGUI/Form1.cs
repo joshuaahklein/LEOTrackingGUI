@@ -160,7 +160,6 @@ namespace LEOTrackingGUI
             Thread th = new Thread(start_openCV);
             th.Start();
 
-
             //Start process
             pyScript = new Process();
             pyScript.StartInfo = psi;

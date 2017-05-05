@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuStrip2 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,16 +39,12 @@
             this.gpsLabel = new System.Windows.Forms.Label();
             this.tleLabel = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
             this.currentPositionLabel = new System.Windows.Forms.Label();
-            this.axWindowsMediaPlayer2 = new AxWMPLib.AxWindowsMediaPlayer();
             this.trackingButton = new System.Windows.Forms.Button();
             this.abortButton = new System.Windows.Forms.Button();
             this.radioTLE = new System.Windows.Forms.RadioButton();
             this.radioPlanes = new System.Windows.Forms.RadioButton();
             this.menuStrip2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer2)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -133,15 +128,6 @@
             this.timer1.Enabled = true;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick_1);
             // 
-            // axWindowsMediaPlayer1
-            // 
-            this.axWindowsMediaPlayer1.Enabled = true;
-            this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(141, 95);
-            this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
-            this.axWindowsMediaPlayer1.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer1.OcxState")));
-            this.axWindowsMediaPlayer1.Size = new System.Drawing.Size(512, 512);
-            this.axWindowsMediaPlayer1.TabIndex = 5;
-            // 
             // currentPositionLabel
             // 
             this.currentPositionLabel.AutoSize = true;
@@ -150,15 +136,6 @@
             this.currentPositionLabel.Size = new System.Drawing.Size(81, 13);
             this.currentPositionLabel.TabIndex = 6;
             this.currentPositionLabel.Text = "Current Position";
-            // 
-            // axWindowsMediaPlayer2
-            // 
-            this.axWindowsMediaPlayer2.Enabled = true;
-            this.axWindowsMediaPlayer2.Location = new System.Drawing.Point(659, 95);
-            this.axWindowsMediaPlayer2.Name = "axWindowsMediaPlayer2";
-            this.axWindowsMediaPlayer2.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayer2.OcxState")));
-            this.axWindowsMediaPlayer2.Size = new System.Drawing.Size(512, 512);
-            this.axWindowsMediaPlayer2.TabIndex = 7;
             // 
             // trackingButton
             // 
@@ -206,14 +183,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1236, 761);
+            this.ClientSize = new System.Drawing.Size(1236, 176);
             this.Controls.Add(this.radioPlanes);
             this.Controls.Add(this.radioTLE);
             this.Controls.Add(this.abortButton);
             this.Controls.Add(this.trackingButton);
-            this.Controls.Add(this.axWindowsMediaPlayer2);
             this.Controls.Add(this.currentPositionLabel);
-            this.Controls.Add(this.axWindowsMediaPlayer1);
             this.Controls.Add(this.tleLabel);
             this.Controls.Add(this.gpsLabel);
             this.Controls.Add(this.clockLabel);
@@ -225,8 +200,6 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip2.ResumeLayout(false);
             this.menuStrip2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -244,9 +217,7 @@
         private System.Windows.Forms.Label gpsLabel;
         private System.Windows.Forms.Label tleLabel;
         private System.Windows.Forms.Timer timer1;
-        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
         private System.Windows.Forms.Label currentPositionLabel;
-        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer2;
         private System.Windows.Forms.Button trackingButton;
         private System.Windows.Forms.Button abortButton;
         private System.Windows.Forms.RadioButton radioTLE;
