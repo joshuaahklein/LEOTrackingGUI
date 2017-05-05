@@ -246,23 +246,26 @@ def StepperError(e):
         print()
 
 def StepperCurrentChanged(e):
-    source = e.device
-    print("Stepper %i: Motor %i -- Current Draw: %6f" % (source.getSerialNum(), e.index, e.current))
-    print()
+    # source = e.device
+    # print("Stepper %i: Motor %i -- Current Draw: %6f" % (source.getSerialNum(), e.index, e.current))
+    # print()
+    pass
 def StepperInputChanged(e):
     source = e.device
     print("Stepper %i: Input %i -- State: %s" % (source.getSerialNum(), e.index, e.state))
     print()
 
 def StepperPositionChanged(e):
-    source = e.device
-    print("Stepper %i: Motor %i -- Position: %f" % (source.getSerialNum(), e.index, e.position))
-    print()
+    # source = e.device
+    # print("Stepper %i: Motor %i -- Position: %f" % (source.getSerialNum(), e.index, e.position))
+    # print()
+    pass
 
 def StepperVelocityChanged(e):
-    source = e.device
-    print("Stepper %i: Motor %i -- Velocity: %f" % (source.getSerialNum(), e.index, e.velocity))
-    print()
+    # source = e.device
+    # print("Stepper %i: Motor %i -- Velocity: %f" % (source.getSerialNum(), e.index, e.velocity))
+    # print()
+    pass
 
 def phidgetOpener(stepper, sid):
     try:
@@ -422,61 +425,29 @@ def moveMotors(stepper, velAlphaConv, accelAlphaConv):
 
 
 
-# while compTime > absTime:
-#     sleep(1)
-
-# primaryTargetPosition = -50000
-
-#INITIAL PRIMARY AXIS MOVEMENT
 #Main Program Code
 #Create a stepper object
 
 stepper = StepperCreate()
 stepper2 = StepperCreate()
 
+#Open each stepper
 phidgetOpener(stepper, 423486)
 phidgetOpener(stepper2,423840)
 
-moveMotors(stepper, velAlphaConv, accelAlphaConv)
-moveMotors(stepper2, velBetaConv, accelBetaConv)
+#set up multithreading:
+threads = []
+t = threading.Thread(target=moveMotors, args=(stepper, velAlphaConv, accelAlphaConv))
+threads.append(t)
+t2 = threading.Thread(target=moveMotors, args=(stepper2, velBetaConv, accelBetaConv))
+threads.append(t2)
 
-# print("Set the current position as start position...")
+# Execute motor control code
+t.start()
+t2.start()
 
-# stepper.setCurrentPosition(0, 0)
-
-# sleep(0.1)
-
-
-
-# print("Set the motor as engaged...")
-
-# stepper.setEngaged(0, True)
-
-# sleep(0.1)
-
-
-
-# print("The motor will run until it reaches the set goal position...")
-
-
-
-# stepper.setAcceleration(0, 87543)
-
-# stepper.setVelocityLimit(0, 128)
-
-# stepper.setCurrentLimit(0, 0.26)
-
-# sleep(0.2)
-
-# stepper.setTargetPosition(0, 60000)
-
-# try:
-#     while stepper.getCurrentPosition != 60000:
-#         pass
-# except KeyboardInterrupt:
-#     stopper = stepper.getCurrentPosition(0)
-#     stepper.setTargetPosition(0, stopper)
-#     stepper.closePhidget()
+# moveMotors(stepper, velAlphaConv, accelAlphaConv)
+# moveMotors(stepper2, velBetaConv, accelBetaConv)
 
 print("Done.")
 
