@@ -20,3 +20,13 @@ C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\AxInterop.WMPLib
 C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.csproj.ResolveComReference.cache
 C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.exe
 C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.pdb
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\bin\Debug\LEOTrackingGUI.exe
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\bin\Debug\LEOTrackingGUI.pdb
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\bin\Debug\Interop.WMPLib.dll
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\bin\Debug\AxInterop.WMPLib.dll
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.csprojResolveAssemblyReference.cache
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.Form1.resources
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.GPSDialog.resources
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.Properties.Resources.resources
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.TLEDialog.resources
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.csproj.GenerateResource.Cache

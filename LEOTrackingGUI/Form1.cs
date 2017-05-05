@@ -157,9 +157,42 @@ namespace LEOTrackingGUI
 
             //Run OpenCV .exe
             //Process.Start(basePath + @"\SatelliteTracker\x64\Debug\SatelliteTracker.exe");
-            Thread th = new Thread(start_openCV);
-            th.Start();
 
+
+            //Plan A
+            Thread th1 = new Thread(start_openCV);
+            Thread th2 = new Thread(start_tracking);
+            th1.Start();
+            th2.Start();
+
+            //Plan B
+            /*
+             pyScript = new Process();
+             pyScript.StartInfo = psi;
+             pyScript.Start();
+
+             reader = pyScript.StandardOutput;
+             pyOutStr = reader.ReadToEnd();
+
+             Process.Start(basePath + @"\SatelliteTracker\x64\Debug\SatelliteTracker.exe");
+
+             pyScript.WaitForExit();
+             pyScript.Close();
+             */
+
+            //Console.WriteLine(pyOutStr);
+
+            while (status == 1) { }
+        }
+
+        private void start_openCV()
+        {
+            Thread.Sleep(500);
+            Process.Start(basePath + @"\SatelliteTracker\x64\Debug\SatelliteTracker.exe");
+        }
+
+        private void start_tracking()
+        {
             //Start process
             pyScript = new Process();
             pyScript.StartInfo = psi;
@@ -167,19 +200,11 @@ namespace LEOTrackingGUI
 
             reader = pyScript.StandardOutput;
             pyOutStr = reader.ReadToEnd();
-           
+
             pyScript.WaitForExit();
             pyScript.Close();
+
             status = 0;
-
-
-            th.Abort();
-            //Console.WriteLine(pyOutStr);
-        }
-
-        private void start_openCV()
-        {
-            Process.Start(basePath + @"\SatelliteTracker\x64\Debug\SatelliteTracker.exe");
         }
 
         private void abortButton_Click(object sender, EventArgs e)
