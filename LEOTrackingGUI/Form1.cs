@@ -164,6 +164,7 @@ namespace LEOTrackingGUI
             Thread th2 = new Thread(start_tracking);
             th1.Start();
             th2.Start();
+            while (status == 1) { }
 
             //Plan B
             /*
@@ -179,10 +180,6 @@ namespace LEOTrackingGUI
              pyScript.WaitForExit();
              pyScript.Close();
              */
-
-            //Console.WriteLine(pyOutStr);
-
-            while (status == 1) { }
         }
 
         private void start_openCV()
