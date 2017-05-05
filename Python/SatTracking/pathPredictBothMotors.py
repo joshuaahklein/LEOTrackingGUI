@@ -16,17 +16,18 @@ import os
 
 
 # For GPS Stuff
-from gps import poll
+#from gps import poll
 
-# For Phidgets
+# For Phidgets 
 from pprint import pprint
 import numpy as np
-# from ctypes import *
-# from time import sleep
-# from Phidgets.PhidgetException import PhidgetErrorCodes, PhidgetException
-# from Phidgets.Events.Events import AttachEventArgs, DetachEventArgs, ErrorEventArgs, InputChangeEventArgs, CurrentChangeEventArgs, StepperPositionChangeEventArgs, VelocityChangeEventArgs
-# from Phidgets.Devices.Stepper import Stepper
-# from Phidgets.Phidget import PhidgetLogLevel
+from ctypes import *
+from time import sleep
+from Phidgets.PhidgetException import PhidgetErrorCodes, PhidgetException
+from Phidgets.Events.Events import AttachEventArgs, DetachEventArgs, ErrorEventArgs, InputChangeEventArgs, CurrentChangeEventArgs, StepperPositionChangeEventArgs, VelocityChangeEventArgs
+from Phidgets.Devices.Stepper import Stepper
+from Phidgets.Phidget import PhidgetLogLevel
+import threading
 
 
 
@@ -129,7 +130,7 @@ for x in range(0,i): #position matrix
 #the starting horizon, and ending 5 degrees below the ending horizon.
 
 for x in range(0,i-1): #velocity matrix
-    velalphatemp = alpha[x+1]-alpha[x]
+    velalphatemp = alpha[x+1] - alpha[x]
     velalphatemp = velalphatemp/timestep
     
     velbetatemp = beta[x+1]-beta[x]
@@ -173,63 +174,232 @@ print("PREDICTION DONE")
 conversionFactor = 0.018
 
 #Convert alphatemp and betatemp to float arrays so they can be converted to steps and 
-alphaConv = np.array(alpha, dtype=float)
-#pprint(alphaConv)
-betaConv = np.array(beta, dtype=float)
-pprint(betaConv)
+#velAlphaConv = np.asarray(velalpha)
+#accelAlphaConv = np.asarray(accelalpha)
+#velBetaConv = np.asarray(velbeta)
+#accelBetaConv = np.asarray(accelbeta)
 
 #Convert to steps
 #Use ahAlpha and ahBeta instead once RT is implemented
-for x in range(0,i):
-    ans = alphaConv[x]/conversionFactor
-    alphaConv[x]=ans
-    ans2 = betaConv[x]/conversionFactor
-    betaConv[x] = ans2
-#pprint(alphaConv)
-#pprint(betaConv)
+#for x in range(0,i-1):
+#    ans = (velalpha[x]/conversionFactor)*16
+#    velAlphaConv[x]=ans
+#    ans2 = (velbeta[x]/conversionFactor)*16
+#    velBetaConv[x] = ans2
+
+
+#Future Work: this is currently abs, and has a clunky if statement to change posititon from pos to neg
+#Fix this
+
+velAlphaConv =   abs(np.asarray(velalpha, dtype=float)  / conversionFactor*16)
+velBetaConv =    abs(np.asarray(velbeta, dtype=float)   / conversionFactor*16)
+accelAlphaConv = abs(np.asarray(accelalpha, dtype=float)/ conversionFactor*16)
+accelBetaConv =  abs(np.asarray(accelbeta, dtype=float) / conversionFactor*16)
+
+pprint(velAlphaConv)
+pprint(accelAlphaConv)
+pprint(velBetaConv)
+pprint(accelBetaConv)
+
+#exit(1)
+
+#for x in range(0,i-2):
+#    ans3 = (accelalpha[x]/conversionFactor)*16
+#    accelAlphaConv[x]=ans3
+
+#    ans4 = (accelbeta[x]/conversionFactor)*16
+#    accelBetaConv[x] = ans4
+#velAlphaConv2 = np.array(velAlphaConv, dtype=int)
+#accelAlphaConv2 = np.array(accelAlphaConv, dtype=int)
+#velBetaConv2 = np.array(velBetaConv, dtype=int)
+#accelBetaConv2 = np.array(accelBetaConv, dtype=int)
+########################################################################################################
+########################################################################################################
+#FUNCTION DEFINITIONS
+#Information Display Function
+def DisplayDeviceInfo(stepper):
+    print("|------------|----------------------------------|--------------|------------|")
+    print("|- Attached -|-              Type              -|- Serial No. -|-  Version -|")
+    print("|------------|----------------------------------|--------------|------------|")
+    print("|- %8s -|- %30s -|- %10d -|- %8d -|" % (stepper.isAttached(), stepper.getDeviceName(), stepper.getSerialNum(), stepper.getDeviceVersion()))
+    print("|------------|----------------------------------|--------------|------------|")
+    print("Number of Motors: %i" % (stepper.getMotorCount()))
+
+
+#Event Handler Callback Functions
+def StepperAttached(e):
+    attached = e.device
+    print("Stepper %i Attached!" % (attached.getSerialNum()))
+    print()
+
+def StepperDetached(e):
+    detached = e.device
+    print("Stepper %i Detached!" % (detached.getSerialNum()))
+    print()
+
+def StepperError(e):
+    try:
+        source = e.device
+        print("Stepper %i: Phidget Error %i: %s" % (source.getSerialNum(), e.eCode, e.description))
+    except PhidgetException as e:
+        print("Phidget Exception %i: %s" % (e.code, e.details))
+        print()
+
+def StepperCurrentChanged(e):
+    source = e.device
+    print("Stepper %i: Motor %i -- Current Draw: %6f" % (source.getSerialNum(), e.index, e.current))
+    print()
+def StepperInputChanged(e):
+    source = e.device
+    print("Stepper %i: Input %i -- State: %s" % (source.getSerialNum(), e.index, e.state))
+    print()
+
+def StepperPositionChanged(e):
+    source = e.device
+    print("Stepper %i: Motor %i -- Position: %f" % (source.getSerialNum(), e.index, e.position))
+    print()
+
+def StepperVelocityChanged(e):
+    source = e.device
+    print("Stepper %i: Motor %i -- Velocity: %f" % (source.getSerialNum(), e.index, e.velocity))
+    print()
+
+def phidgetOpener(stepper, sid):
+    try:
+        stepper.openPhidget()
+    except PhidgetException as e:
+        print("Phidget Exception %i: %s" % (e.code, e.details))
+        print("Exiting....")
+        exit(1)
+
+    print("Waiting for attach....")
+
+    try:
+        stepper.waitForAttach(10000)
+    except PhidgetException as e:
+        print("Phidget Exception %i: %s" % (e.code, e.details))
+        try:
+            stepper.closePhidget()
+        except PhidgetException as e:
+            print("Phidget Exception %i: %s" % (e.code, e.details))
+            print("Exiting....")
+            exit(1)
+        print("Exiting....")
+        exit(1)
+    else:
+        DisplayDeviceInfo(stepper)
+
+
+def  StepperCreate():
+    try:
+        stepper = Stepper()
+    except RuntimeError as e:
+        print("Runtime Exception: %s" % e.details)
+        print("Exiting....")
+        exit(1)
+
+    try:
+        #logging example, uncomment to generate a log file
+        #stepper.enableLogging(PhidgetLogLevel.PHIDGET_LOG_VERBOSE, "phidgetlog.log")
+
+        stepper.setOnAttachHandler(StepperAttached)
+        stepper.setOnDetachHandler(StepperDetached)
+        stepper.setOnErrorhandler(StepperError)
+        stepper.setOnCurrentChangeHandler(StepperCurrentChanged)
+        stepper.setOnInputChangeHandler(StepperInputChanged)
+        stepper.setOnPositionChangeHandler(StepperPositionChanged)
+        stepper.setOnVelocityChangeHandler(StepperVelocityChanged)
+
+        # stepper2.setOnAttachHandler(StepperAttached)
+        # stepper2.setOnDetachHandler(StepperDetached)
+        # stepper2.setOnErrorhandler(StepperError)
+        # stepper2.setOnCurrentChangeHandler(StepperCurrentChanged)
+        # stepper2.setOnInputChangeHandler(StepperInputChanged)
+        # stepper2.setOnPositionChangeHandler(StepperPositionChanged)
+        # stepper2.setOnVelocityChangeHandler(StepperVelocityChanged)
+
+    except PhidgetException as e:
+        print("Phidget Exception %i: %s" % (e.code, e.details))
+        print("Exiting....")
+        exit(1)
+
+    print("Opening phidget object....")
+
+    return stepper
 
 
 
-# #Information Display Function
-# def DisplayDeviceInfo():
-#     print("|------------|----------------------------------|--------------|------------|")
-#     print("|- Attached -|-              Type              -|- Serial No. -|-  Version -|")
-#     print("|------------|----------------------------------|--------------|------------|")
-#     print("|- %8s -|- %30s -|- %10d -|- %8d -|" % (stepper.isAttached(), stepper.getDeviceName(), stepper.getSerialNum(), stepper.getDeviceVersion()))
-#     print("|------------|----------------------------------|--------------|------------|")
-#     print("Number of Motors: %i" % (stepper.getMotorCount()))
+def moveMotors(stepper, velAlphaConv, accelAlphaConv):
+    # %% The code that actually tells the motors where to go
+    try:
 
-# #Event Handler Callback Functions
-# def StepperAttached(e):
-#     attached = e.device
-#     print("Stepper %i Attached!" % (attached.getSerialNum()))
+        print("Set the current position as start position...")
 
-# def StepperDetached(e):
-#     detached = e.device
-#     print("Stepper %i Detached!" % (detached.getSerialNum()))
+        stepper.setCurrentPosition(0, 0)
 
-# def StepperError(e):
-#     try:
-#         source = e.device
-#         print("Stepper %i: Phidget Error %i: %s" % (source.getSerialNum(), e.eCode, e.description))
-#     except PhidgetException as e:
-#         print("Phidget Exception %i: %s" % (e.code, e.details))
+        sleep(0.1)
 
-# def StepperCurrentChanged(e):
-#     source = e.device
-#     print("Stepper %i: Motor %i -- Current Draw: %6f" % (source.getSerialNum(), e.index, e.current))
+        
 
-# def StepperInputChanged(e):
-#     source = e.device
-#     print("Stepper %i: Input %i -- State: %s" % (source.getSerialNum(), e.index, e.state))
+        print("Set the motor as engaged...")
 
-# def StepperPositionChanged(e):
-#     source = e.device
-#     print("Stepper %i: Motor %i -- Position: %f" % (source.getSerialNum(), e.index, e.position))
+        stepper.setEngaged(0, True)
 
-# def StepperVelocityChanged(e):
-#     source = e.device
-#     print("Stepper %i: Motor %i -- Velocity: %f" % (source.getSerialNum(), e.index, e.velocity))
+        sleep(0.1)
+
+        
+
+        print("The motor will run until it reaches the set goal position...")
+
+        
+
+        stepper.setAcceleration(0, 87543)
+
+        stepper.setVelocityLimit(0, 256)
+
+        stepper.setCurrentLimit(0, 0.26)
+
+        sleep(0.2)
+
+        
+
+        print("Will now move to position primaryTargetPosition...")
+        # Sketchy continuous mode
+        # maxPos = stepper.getPositionMax(0)
+        stepper.setTargetPosition(0, 9999999)
+        # if stepper != stepper2:
+        #     stepper.setTargetPosition(0, -9999999)
+        for x in range(0,i-2):
+            #timer = time.clock()
+            #while timer < timestep:
+            print('vel/accel index',x)
+            print(velAlphaConv[x])
+            stepper.setVelocityLimit(0, velAlphaConv[x])
+            #stepper.setAcceleration(0, accelAlphaConv[x])
+            sleep(timestep)
+        sleep(0.2)
+
+        print("Will now move back to positon 0...")
+        stepper.setVelocityLimit(0, 9999)
+        stepper.setTargetPosition(0, 0)
+
+        while stepper.getCurrentPosition(0) != 0:
+            sleep(0.01)
+
+    except PhidgetException as e:
+        print("Phidget Exception %i: %s" % (e.code, e.details))
+        print("Exiting....")
+        exit(1)
+
+    try:
+        stepper.setEngaged(0, False)
+        sleep(0.1)
+        stepper.closePhidget()
+    except PhidgetException as e:
+        print("Phidget Exception %i: %s" % (e.code, e.details))
+        print("Exiting....")
+        exit(1)
+
 
 ############################################################################################################################################################################################################################################################################
 ####################################################################################################################################################################################################################################################################################################################################################
@@ -237,18 +407,16 @@ for x in range(0,i):
 #Time code: need to ensure that absolute time is consistent between pathPredict
 # gps, and motors
 
-absTime = poll()
-print(absTime)
+#absTime = poll()
+#print(absTime)
 #completely BS and arbitrary: replace later with real shit from Amber's RT code
-startTime = 835983465019384705927
+#startTime = 835983465019384705927
 #completely BS and arbitrary: replace later with real shit that you figure out
-buffTime = 100
-compTime = startTime - buffTime
+#buffTime = 100
+#compTime = startTime - buffTime
 
 
 #This is where the motors will point the telescope at stars first
-
-
 
 #startTime = ahEpoch(0)? (the first one, 0 or 1, whatever)
 
@@ -257,390 +425,60 @@ compTime = startTime - buffTime
 # while compTime > absTime:
 #     sleep(1)
 
-
-
-
 # primaryTargetPosition = -50000
 
-# #INITIAL PRIMARY AXIS MOVEMENT
-# #Main Program Code
-# #Create a stepper object
-# try:
-#     stepper = Stepper()
-# except RuntimeError as e:
-#     print("Runtime Exception: %s" % e.details)
-#     print("Exiting....")
-#     exit(1)
+#INITIAL PRIMARY AXIS MOVEMENT
+#Main Program Code
+#Create a stepper object
+
+stepper = StepperCreate()
+stepper2 = StepperCreate()
+
+phidgetOpener(stepper, 423486)
+phidgetOpener(stepper2,423840)
+
+moveMotors(stepper, velAlphaConv, accelAlphaConv)
+moveMotors(stepper2, velBetaConv, accelBetaConv)
+
+# print("Set the current position as start position...")
+
+# stepper.setCurrentPosition(0, 0)
+
+# sleep(0.1)
+
+
+
+# print("Set the motor as engaged...")
+
+# stepper.setEngaged(0, True)
+
+# sleep(0.1)
+
+
+
+# print("The motor will run until it reaches the set goal position...")
+
+
+
+# stepper.setAcceleration(0, 87543)
+
+# stepper.setVelocityLimit(0, 128)
+
+# stepper.setCurrentLimit(0, 0.26)
+
+# sleep(0.2)
+
+# stepper.setTargetPosition(0, 60000)
 
 # try:
-#     #logging example, uncomment to generate a log file
-#     #stepper.enableLogging(PhidgetLogLevel.PHIDGET_LOG_VERBOSE, "phidgetlog.log")
-
-#     stepper.setOnAttachHandler(StepperAttached)
-#     stepper.setOnDetachHandler(StepperDetached)
-#     stepper.setOnErrorhandler(StepperError)
-#     stepper.setOnCurrentChangeHandler(StepperCurrentChanged)
-#     stepper.setOnInputChangeHandler(StepperInputChanged)
-#     stepper.setOnPositionChangeHandler(StepperPositionChanged)
-#     stepper.setOnVelocityChangeHandler(StepperVelocityChanged)
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     print("Exiting....")
-#     exit(1)
-
-# print("Opening phidget object....")
-
-# try:
-#     stepper.openPhidget(423486)
-#     #stepper.openPhidget(423840)
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     print("Exiting....")
-#     exit(1)
-
-# print("Waiting for attach....")
-
-# try:
-#     stepper.waitForAttach(10000)
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     try:
-#         stepper.closePhidget()
-#     except PhidgetException as e:
-#         print("Phidget Exception %i: %s" % (e.code, e.details))
-#         print("Exiting....")
-#         exit(1)
-#     print("Exiting....")
-#     exit(1)
-# else:
-#     DisplayDeviceInfo()
-
-# try:
-#     #The code that actually tells the motors where to go
-
-#     print("Set the current position as start position...")
-
-#     stepper.setCurrentPosition(0, 0)
-
-#     sleep(0.1)
-
-    
-
-#     print("Set the motor as engaged...")
-
-#     stepper.setEngaged(0, True)
-
-#     sleep(0.1)
-
-    
-
-#     print("The motor will run until it reaches the set goal position...")
-
-    
-
-#     stepper.setAcceleration(0, 87543)
-
-#     stepper.setVelocityLimit(0, 6200)
-
-#     stepper.setCurrentLimit(0, 0.26)
-
-#     sleep(0.2)
-
-    
-
-#     print("Will now move to position primaryTargetPosition...")
-#     stepper.setTargetPosition(0, primaryTargetPosition)
-
-#     while stepper.getCurrentPosition(0) != primaryTargetPosition:
-
+#     while stepper.getCurrentPosition != 60000:
 #         pass
-
-    
-
-#     sleep(0.2)
-
-    
-#     """
-#     print("Will now move back to positon 0...")
-
-#     stepper.setTargetPosition(0, 0)
-
-#     while stepper.getCurrentPosition(0) != 0:
-
-#         pass
-#     """    
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     print("Exiting....")
-#     exit(1)
-
-# # print("Press Enter to quit....")
-
-# # chr = sys.stdin.read(1)
-
-# # print("Closing...")
-
-# try:
-#     stepper.setEngaged(0, False)
-#     sleep(0.1)
+# except KeyboardInterrupt:
+#     stopper = stepper.getCurrentPosition(0)
+#     stepper.setTargetPosition(0, stopper)
 #     stepper.closePhidget()
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     print("Exiting....")
-#     exit(1)
 
-# print("Done.")
+print("Done.")
 
 # ############################################################################################################################################################################################################################################################################
 # ####################################################################################################################################################################################################################################################################################################################################################
-# #SECONDARY AXIS MOVEMENT
-# #Create a stepper object
-# try:
-#     stepper = Stepper()
-# except RuntimeError as e:
-#     print("Runtime Exception: %s" % e.details)
-#     print("Exiting....")
-#     exit(1)
-
-# try:
-#     #logging example, uncomment to generate a log file
-#     #stepper.enableLogging(PhidgetLogLevel.PHIDGET_LOG_VERBOSE, "phidgetlog.log")
-
-#     stepper.setOnAttachHandler(StepperAttached)
-#     stepper.setOnDetachHandler(StepperDetached)
-#     stepper.setOnErrorhandler(StepperError)
-#     stepper.setOnCurrentChangeHandler(StepperCurrentChanged)
-#     stepper.setOnInputChangeHandler(StepperInputChanged)
-#     stepper.setOnPositionChangeHandler(StepperPositionChanged)
-#     stepper.setOnVelocityChangeHandler(StepperVelocityChanged)
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     print("Exiting....")
-#     exit(1)
-
-# print("Opening phidget object....")
-
-# try:
-#     # stepper.openPhidget(423486)
-#     stepper.openPhidget(423840)
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     print("Exiting....")
-#     exit(1)
-
-# print("Waiting for attach....")
-
-# try:
-#     stepper.waitForAttach(10000)
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     try:
-#         stepper.closePhidget()
-#     except PhidgetException as e:
-#         print("Phidget Exception %i: %s" % (e.code, e.details))
-#         print("Exiting....")
-#         exit(1)
-#     print("Exiting....")
-#     exit(1)
-# else:
-#     DisplayDeviceInfo()
-
-# try:
-#     print("Set the current position as start position...")
-
-#     stepper.setCurrentPosition(0, 0)
-
-#     sleep(0.1)
-    
-
-#     print("Set the motor as engaged...")
-
-#     stepper.setEngaged(0, True)
-
-#     sleep(0.1)
-    
-
-#     print("The motor will run until it reaches the set goal position...")
-
-#     stepper.setAcceleration(0, 87543)
-
-#     stepper.setVelocityLimit(0, 1600)
-
-#     stepper.setCurrentLimit(0, 0.26)
-
-#     sleep(0.2)
-
-    
-
-#     print("Will now move to goal position ...")
-
-#     stepper.setTargetPosition(0, 140000)
-
-#     while stepper.getCurrentPosition(0) != 140000:
-
-#         pass
-    
-
-#     sleep(0.2)
-
-#     stepper.setVelocityLimit(0, 7200)
-
-    
-#     print("Will now move back to positon 0...")
-
-#     stepper.setTargetPosition(0, 0)
-
-#     while stepper.getCurrentPosition(0) != 0:
-
-#         pass
-    
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     print("Exiting....")
-#     exit(1)
-
-# # print("Press Enter to quit....")
-
-# # chr = sys.stdin.read(1)
-
-# # print("Closing...")
-
-# try:
-#     stepper.setEngaged(0, False)
-#     sleep(0.1)
-#     stepper.closePhidget()
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     print("Exiting....")
-#     exit(1)
-
-# print("Done.")
-
-
-# ############################################################################################################################################################################################################################################################################
-# ####################################################################################################################################################################################################################################################################################################################################################
-
-# # RESET PRIMARY AXIS BACK TO 0
-# #Create a stepper object
-# try:
-#     stepper = Stepper()
-# except RuntimeError as e:
-#     print("Runtime Exception: %s" % e.details)
-#     print("Exiting....")
-#     exit(1)
-
-# try:
-#     #logging example, uncomment to generate a log file
-#     #stepper.enableLogging(PhidgetLogLevel.PHIDGET_LOG_VERBOSE, "phidgetlog.log")
-
-#     stepper.setOnAttachHandler(StepperAttached)
-#     stepper.setOnDetachHandler(StepperDetached)
-#     stepper.setOnErrorhandler(StepperError)
-#     stepper.setOnCurrentChangeHandler(StepperCurrentChanged)
-#     stepper.setOnInputChangeHandler(StepperInputChanged)
-#     stepper.setOnPositionChangeHandler(StepperPositionChanged)
-#     stepper.setOnVelocityChangeHandler(StepperVelocityChanged)
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     print("Exiting....")
-#     exit(1)
-
-# print("Opening phidget object....")
-
-# try:
-#     stepper.openPhidget(423486)
-#     #stepper.openPhidget(423840)
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     print("Exiting....")
-#     exit(1)
-
-# print("Waiting for attach....")
-
-# try:
-#     stepper.waitForAttach(10000)
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     try:
-#         stepper.closePhidget()
-#     except PhidgetException as e:
-#         print("Phidget Exception %i: %s" % (e.code, e.details))
-#         print("Exiting....")
-#         exit(1)
-#     print("Exiting....")
-#     exit(1)
-# else:
-#     DisplayDeviceInfo()
-
-# try:
-    
-
-#     print("Set the current position as start position...")
-
-#     stepper.setCurrentPosition(0, primaryTargetPosition)
-
-#     sleep(0.1)
-
-    
-
-#     print("Set the motor as engaged...")
-
-#     stepper.setEngaged(0, True)
-
-#     sleep(0.1)
-
-    
-
-#     print("The motor will run until it reaches the set goal position...")
-
-    
-
-#     stepper.setAcceleration(0, 87543)
-
-#     stepper.setVelocityLimit(0, 6200)
-
-#     stepper.setCurrentLimit(0, 0.26)
-
-#     sleep(0.2)
-
-    
-
-#     print("Will now move to position 0...")
-#     primaryTargetPosition = 0
-#     stepper.setTargetPosition(0, 0)
-
-#     while stepper.getCurrentPosition(0) != 0:
-
-#         pass
-
-    
-
-#     sleep(0.2)
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     print("Exiting....")
-#     exit(1)
-
-# # print("Press Enter to quit....")
-
-# # chr = sys.stdin.read(1)
-
-# # print("Closing...")
-
-# try:
-#     stepper.setEngaged(0, False)
-#     sleep(0.1)
-#     stepper.closePhidget()
-# except PhidgetException as e:
-#     print("Phidget Exception %i: %s" % (e.code, e.details))
-#     print("Exiting....")
-#     exit(1)
-
-# print("Done.")
-
-
-
-
-
-
-# exit(0)
