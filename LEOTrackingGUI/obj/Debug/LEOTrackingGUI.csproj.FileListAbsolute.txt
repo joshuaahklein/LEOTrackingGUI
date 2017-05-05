@@ -14,3 +14,9 @@ C:\Users\kpmhu\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.TL
 C:\Users\kpmhu\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.csproj.GenerateResource.Cache
 C:\Users\kpmhu\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.exe
 C:\Users\kpmhu\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.pdb
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\bin\Debug\LEOTrackingGUI.exe.config
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\Interop.WMPLib.dll
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\AxInterop.WMPLib.dll
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.csproj.ResolveComReference.cache
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.exe
+C:\Users\Joshua\Desktop\LEOTrackingGUI\LEOTrackingGUI\obj\Debug\LEOTrackingGUI.pdb

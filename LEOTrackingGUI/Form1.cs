@@ -7,9 +7,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows.Forms; 
+using System.Windows.Forms;
 
 namespace LEOTrackingGUI
 {
@@ -41,7 +42,7 @@ namespace LEOTrackingGUI
             string path = Directory.GetCurrentDirectory();
             basePath = path.Substring(0, path.Length - @"LEOTrackingGUI\bin\Debug".Length);
             python = basePath + @"Python\Shell\python.exe";
-            satApp = basePath + @"Python\SatTracking\pathpredict.py";
+            satApp = basePath + @"Python\SatTracking\pathPredictBothMotors.py";
             planeApp = basePath + @"Python\PlaneTracking\script.py";
 
             //Set default values
@@ -141,8 +142,8 @@ namespace LEOTrackingGUI
 
             //Run python script, load streams, set status
             status = 1;
-            axWindowsMediaPlayer1.Ctlcontrols.play();
-            axWindowsMediaPlayer2.Ctlcontrols.play();
+            //axWindowsMediaPlayer1.Ctlcontrols.play();
+            //axWindowsMediaPlayer2.Ctlcontrols.play();
 
             //Set up process for running py script, read from stdout
             string app = (radioTLE.Checked) ? satApp : planeApp;
@@ -153,7 +154,13 @@ namespace LEOTrackingGUI
             //Pass arguments
             psi.Arguments = app + " " + GPSlatitude + " " + GPSlongitude + 
                 " \"" + TLE + "\" ";
-            
+
+            //Run OpenCV .exe
+            //Process.Start(basePath + @"\SatelliteTracker\x64\Debug\SatelliteTracker.exe");
+            Thread th = new Thread(start_openCV);
+            th.Start();
+
+
             //Start process
             pyScript = new Process();
             pyScript.StartInfo = psi;
@@ -161,22 +168,19 @@ namespace LEOTrackingGUI
 
             reader = pyScript.StandardOutput;
             pyOutStr = reader.ReadToEnd();
-
-            //Run OpenCV .exe
-
-            Process.Start(basePath+@"\SatelliteTracker\x64\Debug\SatelliteTracker.exe");
-
-
-
-
-
-         
+           
             pyScript.WaitForExit();
             pyScript.Close();
             status = 0;
 
 
-            Console.WriteLine(pyOutStr);
+            th.Abort();
+            //Console.WriteLine(pyOutStr);
+        }
+
+        private void start_openCV()
+        {
+            Process.Start(basePath + @"\SatelliteTracker\x64\Debug\SatelliteTracker.exe");
         }
 
         private void abortButton_Click(object sender, EventArgs e)
@@ -191,8 +195,8 @@ namespace LEOTrackingGUI
             //Stop streams, set status,
             //WILL NEED TO ADD KILL COMMAND HERE WHEN INTERFACED WITH MOTOR DRIVERS
             status = 0;
-            axWindowsMediaPlayer1.Ctlcontrols.stop();
-            axWindowsMediaPlayer2.Ctlcontrols.stop();
+            //axWindowsMediaPlayer1.Ctlcontrols.stop();
+            //axWindowsMediaPlayer2.Ctlcontrols.stop();
         }
     }
 }
