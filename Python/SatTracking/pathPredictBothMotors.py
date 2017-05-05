@@ -60,7 +60,7 @@ bos.lat = '42.364506'
 bos.elevation = 0
 
 #This is hard-coded, and will be replaced with RT code
-date_time = '19.04.2017 05:07:12'
+date_time = '19.04.2017 05:04:33'
 pattern = '%d.%m.%Y %H:%M:%S'
 epoch1 = int(time.mktime(time.strptime(date_time, pattern)))
 
@@ -82,12 +82,19 @@ velbeta = []
 accelalpha = []
 accelbeta = []
 times = []
+polalpha = []
+polbeta = []
+alalpha = []
+albeta = []
+moonalpha = []
+moonbeta = []
+
 #epoch = []
 #these two lines are hardcoded and will change
 timestep = 0.05 #1 is equal to one second
-i = 6000 #number of steps of path desired
+i = 12000 #number of steps of path desired
 
-print("The satellite has to pass over in the next two hours\n")
+print("The satellite has to pass over in the next 15 minutes\n")
 
 #Amber will randomly pick three stars (North and two others) and Kyle will have 
 #the mount point at them first
@@ -98,17 +105,18 @@ for x in range(0,i): #position matrix
     epoch = epoch + timestep #increase time by time step
     bos.date = datetime.utcfromtimestamp(epoch)
     
-    iss.compute(bos) #run computations
-
-    aztemp = degrees(iss.az)
-    eltemp = degrees(iss.alt)
+    #Satellite tracks
+    sat.compute(bos) #run computations
+    aztemp = degrees(sat.az)
+    eltemp = degrees(sat.alt)
 
     azrad = radians(aztemp)
     elrad = radians(eltemp)
 
     alphatemp = (degrees(atan((sin(elrad))/((cos(elrad))*(cos(azrad))))))
-    if alphatemp < 0:
-        alphatemp = alphatemp + 180
+    if alphatemp > 0:
+        if x > 100:
+            alphatemp = alphatemp - 180
                                             
     betatemp = degrees(acos((cos(elrad))*(sin(azrad))))
 
@@ -116,6 +124,58 @@ for x in range(0,i): #position matrix
     el.append(eltemp)
     alpha.append(alphatemp)
     beta.append(betatemp)
+      
+    # Star tracks
+    # North Star
+    polaris = star('Polaris')
+    polaris.compute(bos)
+
+    polaztemp = degrees(polaris.az)
+    poleltemp = degrees(polaris.alt)
+
+    polazrad = radians(polaztemp)
+    polelrad = radians(poleltemp)
+
+    polalphatemp = (degrees(atan((sin(polelrad))/((cos(polelrad))*(cos(polazrad))))))               
+    polbetatemp = degrees(acos((cos(polelrad))*(sin(polazrad))))
+
+    polalpha.append(polalphatemp)
+    polbeta.append(polbetatemp)
+    
+    # Orions Belt     
+    alnitak = star('Alnitak')
+    alnitak.compute(bos)
+
+    alaztemp = degrees(alnitak.az)
+    aleltemp = degrees(alnitak.alt)
+
+    alazrad = radians(alaztemp)
+    alelrad = radians(aleltemp)
+
+    alalphatemp = (degrees(atan((sin(alelrad))/((cos(alelrad))*(cos(alazrad))))))               
+    albetatemp = degrees(acos((cos(alelrad))*(sin(alazrad))))
+
+    alalpha.append(alalphatemp)
+    albeta.append(albetatemp)
+
+    # Moon
+    moon = Moon()
+    moon.compute(bos)
+
+    moonaztemp = degrees(moon.az)
+    mooneltemp = degrees(moon.alt)
+
+    moonazrad = radians(moonaztemp)
+    moonelrad = radians(mooneltemp)
+
+    moonalphatemp = (degrees(atan((sin(moonelrad))/((cos(moonelrad))*(cos(moonazrad))))))               
+    moonbetatemp = degrees(acos((cos(moonelrad))*(sin(moonazrad))))
+    
+    moonalpha.append(moonalphatemp)
+    moonbeta.append(moonbetatemp)
+
+
+ #   print("%s, %s" % (alphatemp, betatemp))    
     
     #Mod for printing
     #print("%s, %s, %s, %s, %s" % (aztemp, eltemp, alphatemp, betatemp, epoch))
